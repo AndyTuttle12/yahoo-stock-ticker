@@ -1,0 +1,45 @@
+body{
+	 overflow: hidden;
+}
+
+container{
+
+}
+
+.yahoo-form{
+	margin: auto;
+	margin-bottom: 20px;
+	text-align: center;
+}
+
+#pages{
+	width: 200vw;
+}
+
+#page-1, #page-2{
+	width: 100vw;
+	float: left;
+	height: 100vh;
+	position: relative;
+	transition: all 2s;
+}
+
+#arrow1, #arrow2{
+	position: absolute;
+	top: 50%;
+	background-color: #337ab7;
+	color: white;
+	font-size: 20px;
+	line-height: 35px;
+	padding: 5px 15px;
+}
+
+#arrow1{
+	right: 0px;
+	border-radius: 5px 0 0 5px;
+}
+
+#arrow2{
+	left: 0px;
+	border-radius: 0 5px 5px 0;
+}
