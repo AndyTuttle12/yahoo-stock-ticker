@@ -34,15 +34,16 @@ $(document).ready(function(){
 		
 	});
 
-	$('#save-btn').click(function(){
-		var userStocksSaved = localStorage.getItem("userStocks");
-		var symbol = $('#symbol').val();
-		if(userStocksSaved !== null){
-			localStorage.setItem("userStocks", symbol + ", " + userStocksSaved);
-		}else{
-			localStorage.setItem("userStocks", symbol);
-		}
-		
+	$('.save-btn').click(function(){
+		// var userStocksSaved = localStorage.getItem("userStocks");
+		// var symbol = $('#symbol').val();
+		// if(userStocksSaved !== null){
+		// 	localStorage.setItem("userStocks", symbol + ", " + userStocksSaved);
+		// }else{
+		// 	localStorage.setItem("userStocks", symbol);
+		// }
+		console.log("Fire");
+		// saveStock(this);
 	});
 
 	$('#clean-btn').click(function(){
@@ -62,7 +63,7 @@ function buildStockRow(stock){
 	}
 	var newHTML = '';
 	newHTML += '<tr>';
-		newHTML += '<td><button class="save-btn btn-success">+</button></td>';
+		newHTML += '<td><button class="btn save-btn btn-success">+</button></td>';
 		newHTML += '<td>'+stock.Symbol+'</td>';
 		newHTML += '<td>'+stock.Name+'</td>';
 		newHTML += '<td>'+stock.Ask+'</td>';
