@@ -22,7 +22,7 @@ $(document).ready(function(){
 	var userStocksSaved = localStorage.getItem('userStocks');
 	
 	var url = 'http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%20in%20("'+userStocksSaved+'")%0A%09%09&env=http%3A%2F%2Fdatatables.org%2Falltables.env&format=json';
-	pullStocks(url);
+	// pullStocks(url);
 	
 	$('.yahoo-form').submit(function(){
 		event.preventDefault();
@@ -30,18 +30,19 @@ $(document).ready(function(){
 		// console.log(symbol);
 		var url = 'http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%20in%20("'+symbol+'")%0A%09%09&env=http%3A%2F%2Fdatatables.org%2Falltables.env&format=json';
 		// console.log(url);
-		pullStocks(url);
+		pullStocks(url, 'stock-body');
 		
 	});
 
 	$('.save-btn').click(function(){
-		// var userStocksSaved = localStorage.getItem("userStocks");
-		// var symbol = $('#symbol').val();
-		// if(userStocksSaved !== null){
-		// 	localStorage.setItem("userStocks", symbol + ", " + userStocksSaved);
-		// }else{
-		// 	localStorage.setItem("userStocks", symbol);
-		// }
+		var userStocksSaved = localStorage.getItem("userStocks");
+		var symbol = $('#symbol').val();
+
+		if(userStocksSaved !== null){
+			localStorage.setItem("userStocks", symbol + ", " + userStocksSaved);
+		}else{
+			localStorage.setItem("userStocks", symbol);
+		}
 		console.log("Fire");
 		// saveStock(this);
 	});
@@ -55,6 +56,12 @@ $(document).ready(function(){
 	});
 });
 
+function saveStocks(){
+	var toSave = $('#tdBtn').next().html();
+	var url = 'http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%20in%20("'+toSave+'")%0A%09%09&env=http%3A%2F%2Fdatatables.org%2Falltables.env&format=json';
+	pullStocks(url, 'watch-body');
+}
+
 function buildStockRow(stock){
 	if(stock.Change.indexOf('+') > -1){
 		var classChange = "success";
@@ -63,7 +70,7 @@ function buildStockRow(stock){
 	}
 	var newHTML = '';
 	newHTML += '<tr>';
-		newHTML += '<td><button class="btn save-btn btn-success">+</button></td>';
+		newHTML += '<td id="tdBtn" onclick="saveStocks(this.nextSibling.innerHTML)"><button class="btn save-btn btn-success">+</button></td>';
 		newHTML += '<td>'+stock.Symbol+'</td>';
 		newHTML += '<td>'+stock.Name+'</td>';
 		newHTML += '<td>'+stock.Ask+'</td>';
@@ -75,18 +82,18 @@ function buildStockRow(stock){
 	// console.log(newHTML);
 }
 
-function pullStocks(url){
+function pullStocks(url, where){
 	$.getJSON(url, function(data){
 		var stockInfo = data.query.results.quote;
 		if(data.query.count == 1){
 			var htmlToPlot = buildStockRow(stockInfo);
-			$('#stock-body').append(htmlToPlot);
+			$("'#"+ where +"'").append(htmlToPlot);
 		}else{
 			for(let i = 0; i < stockInfo.length; i++){
 				var htmlToPlot = buildStockRow(stockInfo[i]);
-				$('#stock-body').append(htmlToPlot);
+				$("'#"+ where +"'").append(htmlToPlot);
 			}
-		}			
+		}
 	});
 };
 // deleteDuplicateKeypairs();
