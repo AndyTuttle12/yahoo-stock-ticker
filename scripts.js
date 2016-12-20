@@ -30,7 +30,7 @@ $(document).ready(function(){
 		// console.log(symbol);
 		var url = 'http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%20in%20("'+symbol+'")%0A%09%09&env=http%3A%2F%2Fdatatables.org%2Falltables.env&format=json';
 		// console.log(url);
-		pullStocks(url, 'stock-body');
+		pullStocks(url);
 		
 	});
 
@@ -44,7 +44,7 @@ $(document).ready(function(){
 			localStorage.setItem("userStocks", symbol);
 		}
 		console.log("Fire");
-		// saveStock(this);
+		saveStocks();
 	});
 
 	$('#clean-btn').click(function(){
@@ -56,10 +56,11 @@ $(document).ready(function(){
 	});
 });
 
-function saveStocks(){
-	var toSave = $('#tdBtn').next().html();
+function saveStocks(param){
+	var toSave = param;
+	console.log(toSave);
 	var url = 'http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%20in%20("'+toSave+'")%0A%09%09&env=http%3A%2F%2Fdatatables.org%2Falltables.env&format=json';
-	pullStocks(url, 'watch-body');
+	pullStocksSave(url);
 }
 
 function buildStockRow(stock){
@@ -70,7 +71,7 @@ function buildStockRow(stock){
 	}
 	var newHTML = '';
 	newHTML += '<tr>';
-		newHTML += '<td id="tdBtn" onclick="saveStocks(this.nextSibling.innerHTML)"><button class="btn save-btn btn-success">+</button></td>';
+		newHTML += '<td onclick="saveStocks(this.nextSibling.innerHTML)"><button class="btn save-btn btn-success">+</button></td>';
 		newHTML += '<td>'+stock.Symbol+'</td>';
 		newHTML += '<td>'+stock.Name+'</td>';
 		newHTML += '<td>'+stock.Ask+'</td>';
@@ -82,18 +83,53 @@ function buildStockRow(stock){
 	// console.log(newHTML);
 }
 
-function pullStocks(url, where){
+function pullStocks(url){
 	$.getJSON(url, function(data){
 		var stockInfo = data.query.results.quote;
 		if(data.query.count == 1){
 			var htmlToPlot = buildStockRow(stockInfo);
-			$("'#"+ where +"'").append(htmlToPlot);
+			$('#stock-body').append(htmlToPlot);
 		}else{
 			for(let i = 0; i < stockInfo.length; i++){
 				var htmlToPlot = buildStockRow(stockInfo[i]);
-				$("'#"+ where +"'").append(htmlToPlot);
+				$('#stock-body').append(htmlToPlot);
 			}
-		}
+		}			
+	});
+};
+
+function buildStockRowSave(stock){
+	if(stock.Change.indexOf('+') > -1){
+		var classChange = "success";
+	}else{
+		var classChange = "danger";
+	}
+	var newHTML = '';
+	newHTML += '<tr>';
+		newHTML += '<td onclick="deleteStocks()"><button class="btn delete-btn btn-danger">X</button></td>';
+		newHTML += '<td>'+stock.Symbol+'</td>';
+		newHTML += '<td>'+stock.Name+'</td>';
+		newHTML += '<td>'+stock.Ask+'</td>';
+		newHTML += '<td>'+stock.Bid+'</td>';
+		newHTML += '<td class="'+classChange+'">'+stock.Change+'</td>';
+	newHTML += '</tr>';
+	return newHTML;
+	// $('#stock-body').append(newHTML);
+	// console.log(newHTML);
+}
+
+function pullStocksSave(url){
+	$.getJSON(url, function(data){
+		var stockInfo = data.query.results.quote;
+		if(data.query.count == 1){
+			var htmlToPlot = buildStockRowSave(stockInfo);
+			$('#watch-body').append(htmlToPlot);
+		}else{
+			for(let i = 0; i < stockInfo.length; i++){
+				var htmlToPlot = buildStockRowSave(stockInfo[i]);
+				$('#watch-body').append(htmlToPlot);
+			}
+		}			
 	});
 };
 // deleteDuplicateKeypairs();
